@@ -3,6 +3,8 @@ import tensorflow.python.platform
 import numpy as np
 import tensorflow as tf
 
+import plot_boundary_on_data  
+
 # Global variables.
 NUM_LABELS = 2    # The number of labels.
 BATCH_SIZE = 100  # The number of training examples to use per training step.
@@ -16,6 +18,7 @@ tf.app.flags.DEFINE_integer('num_epochs', 1,
                             'Number of examples to separate from the training '
                             'data for the validation set.')
 tf.app.flags.DEFINE_boolean('verbose', False, 'Produce verbose output.')
+tf.app.flags.DEFINE_boolean('plot', True, 'Plot the final decision boundary on the data.')
 FLAGS = tf.app.flags.FLAGS
 
 # Extract numpy representations of the labels and features given rows consisting of:
@@ -48,6 +51,9 @@ def extract_data(filename):
 def main(argv=None):
     # Be verbose?
     verbose = FLAGS.verbose
+
+    # Plot? 
+    plot = FLAGS.plot
     
     # Get the data.
     train_data_filename = FLAGS.train
@@ -85,6 +91,7 @@ def main(argv=None):
     train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
     # Evaluation.
+    predicted_class = tf.argmax(y,1);
     correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
@@ -127,6 +134,10 @@ def main(argv=None):
             print
             
         print "Accuracy:", accuracy.eval(feed_dict={x: test_data, y_: test_labels})
+
+        if plot:
+            eval_fun = lambda X: predicted_class.eval(feed_dict={x:X}); 
+            plot_boundary_on_data.plot(test_data, test_labels, eval_fun)
     
 if __name__ == '__main__':
     tf.app.run()
