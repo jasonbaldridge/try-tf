@@ -13,9 +13,6 @@ def plot(X,Y,pred_func):
     maxs = np.amax(X,0); 
     maxs = maxs + 0.1*maxs;
 
-    print mins,'emre'
-    print mins[0,0]
-
     ## generate dense grid
     [xs,ys] = np.meshgrid(np.linspace(mins[0,0],maxs[0,0],500), 
             np.linspace(mins[0,1], maxs[0,1], 500));
