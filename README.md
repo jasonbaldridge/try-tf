@@ -50,7 +50,7 @@ Accuracy: 1.0
 
 The plot of the decision boundary: 
 
-![](decision_boundary_plots/linear_softmax.png)
+<img src="decision_boundary_plots/linear_softmax.png" width="500px"/>
 
 ### Moon data
 
@@ -75,9 +75,9 @@ Accuracy: 0.971
 
 The plot of the decision boundaries produced by the above calls: 
 
-![](decision_boundary_plots/moon_softmax.png)
+<img src="decision_boundary_plots/moon_softmax.png" width="500px"/>
 
-![](decision_boundary_plots/moon_hidden.png)
+<img src="decision_boundary_plots/moon_hidden.png" width="500px"/>
   
 ### Saturn data
 
@@ -102,9 +102,9 @@ Accuracy: 1.0
 
 The plot of the decision boundaries produced by the above calls: 
 
-![](decision_boundary_plots/saturn_softmax.png)
+<img src="decision_boundary_plots/saturn_softmax.png" width="500px"/>
 
-![](decision_boundary_plots/saturn_hidden.png =460x)
+<img src="decision_boundary_plots/saturn_hidden.png" width="500px"/>
 
   
 ## Generating simulated data.
