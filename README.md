@@ -104,7 +104,7 @@ The plot of the decision boundaries produced by the above calls:
 
 ![](decision_boundary_plots/saturn_softmax.png)
 
-![](decision_boundary_plots/saturn_hidden.png)
+![](decision_boundary_plots/saturn_hidden.png =460x)
 
   
 ## Generating simulated data.
