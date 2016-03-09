@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import colors
 
 
 def plot(X,Y,pred_func):
@@ -20,6 +21,6 @@ def plot(X,Y,pred_func):
 
     # Plot the contour and training examples
     plt.contourf(xs, ys, Z, cmap=plt.cm.Spectral)
-    plt.scatter(X[:, 0], X[:, 1], c=Y[:,1], cmap=plt.cm.Greys)
-
+    plt.scatter(X[:, 0], X[:, 1], c=Y[:,1], s=50,
+            cmap=colors.ListedColormap(['orange', 'blue']))
     plt.show()
