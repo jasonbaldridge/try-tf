@@ -70,11 +70,6 @@ def main(argv=None):
     x = tf.placeholder("float", shape=[None, num_features], name="x_input")
     y_ = tf.placeholder("float", shape=[None, NUM_LABELS], name="labels")
     
-    # For the test data, hold the entire dataset in one constant node.
-    test_data_node = tf.constant(test_data)
-
-    # Define and initialize the network.
-
     # These are the weights that inform how much each feature contributes to
     # the classification.
     W = tf.Variable(tf.zeros([num_features,NUM_LABELS]), name="weights")
@@ -83,11 +78,6 @@ def main(argv=None):
         y = tf.nn.softmax(tf.matmul(x,W) + b)
 
 
-    # Add summary ops to collect data
-    w_hist = tf.histogram_summary("weights", W)
-    b_hist = tf.histogram_summary("biases", b)
-    y_hist = tf.histogram_summary("y", y)
-
     # Optimization.
     with tf.name_scope("xent") as scope:
         cross_entropy = -tf.reduce_sum(y_*tf.log(y))
@@ -95,6 +85,17 @@ def main(argv=None):
     
     with tf.name_scope("train") as scope:
         train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+
+    # Add summary ops to collect data
+    w_hist = tf.histogram_summary("weights", W)
+    b_hist = tf.histogram_summary("biases", b)
+    y_hist = tf.histogram_summary("y", y)
+
+
+
+     # For the test data, hold the entire dataset in one constant node.
+    test_data_node = tf.constant(test_data)
+
 
     # Evaluation.
     with tf.name_scope("test") as scope:
