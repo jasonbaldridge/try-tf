@@ -118,3 +118,23 @@ For plotting the image with the hyperplane, start up R and then provide the comm
 
 For plotting the graph relating the number of hidden nodes to accuracy, start up R and then provide the command `source("plot_hidden_curve.R")` to R.
 
+
+## Visualising the model and training using Tensor Board.
+
+TensorFlow includes a visualisation tool called [TensorBoard](https://www.tensorflow.org/versions/r0.7/how_tos/summaries_and_tensorboard/index.html) that allows you to visualise the directed graph of your model.
+
+The script `annotated_softmax.py` reproduces the simple softmax regression, but also includes annotations that will write logging information to a folder called `try_tf_logs`.
+
+After running `annotated_softmax.py`, you can point TensorBoard at the `try_tf_logs` directory to launch a browser-based visualisation of the model and training. 
+
+
+```
+$ python annotated_softmax.py --train simdata/linear_data_train.csv --test simdata/linear_data_eval.csv --num_epochs 5 --verbose False
+Accuracy: 1.0
+
+$ tensorboard --logdir=try_tf_logs/
+Starting TensorBoard  on port 6006
+(You can navigate to http://0.0.0.0:6006)
+```
+
+

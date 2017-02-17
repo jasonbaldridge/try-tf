@@ -66,46 +66,77 @@ def main(argv=None):
     # This is where training samples and labels are fed to the graph.
     # These placeholder nodes will be fed a batch of training data at each
     # training step using the {feed_dict} argument to the Run() call below.
-    x = tf.placeholder("float", shape=[None, num_features])
-    y_ = tf.placeholder("float", shape=[None, NUM_LABELS])
+    # Add a name to include it in the tensor board visualisation.
+    x = tf.placeholder("float", shape=[None, num_features], name="x_input")
+    y_ = tf.placeholder("float", shape=[None, NUM_LABELS], name="labels")
     
     # These are the weights that inform how much each feature contributes to
     # the classification.
-    W = tf.Variable(tf.zeros([num_features,NUM_LABELS]))
-    b = tf.Variable(tf.zeros([NUM_LABELS]))
-    y = tf.nn.softmax(tf.matmul(x,W) + b)
+    W = tf.Variable(tf.zeros([num_features,NUM_LABELS]), name="weights")
+    b = tf.Variable(tf.zeros([NUM_LABELS]), name="bias")
+    with tf.name_scope("Wx_b") as scope:
+        y = tf.nn.softmax(tf.matmul(x,W) + b)
+
 
     # Optimization.
-    cross_entropy = -tf.reduce_sum(y_*tf.log(y))
-    train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+    with tf.name_scope("xent") as scope:
+        cross_entropy = -tf.reduce_sum(y_*tf.log(y))
+        ce_summ = tf.scalar_summary("cross entropy", cross_entropy)
+    
+    with tf.name_scope("train") as scope:
+        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+
+    # Add summary ops to collect data
+    w_hist = tf.histogram_summary("weights", W)
+    b_hist = tf.histogram_summary("biases", b)
+    y_hist = tf.histogram_summary("y", y)
 
 
-    # For the test data, hold the entire dataset in one constant node.
+
+     # For the test data, hold the entire dataset in one constant node.
     test_data_node = tf.constant(test_data)
 
+
     # Evaluation.
-    correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+    with tf.name_scope("test") as scope:
+        correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+        accuracy_summary = tf.scalar_summary("accuracy", accuracy)
+
 
     # Create a local session to run this computation.
     with tf.Session() as s:
 
+        # Merge all the summaries and write them out to try_tf_logs
+        merged = tf.merge_all_summaries()
+        writer = tf.train.SummaryWriter("try_tf_logs", s.graph_def)
+
         # Run all the initializers to prepare the trainable parameters.
         tf.initialize_all_variables().run()
-        
-        # Iterate and train.
-        for step in xrange(num_epochs * train_size // BATCH_SIZE)
-    
-            offset = (step * BATCH_SIZE) % train_size
+        if verbose:
+            print 'Initialized!'
+            print
+            print 'Training.'
 
-            # get a batch of data
+        # Iterate and train.
+        for step in xrange(num_epochs * train_size // BATCH_SIZE):
+            if verbose:
+                print step,
+                
+            offset = (step * BATCH_SIZE) % train_size
             batch_data = train_data[offset:(offset + BATCH_SIZE), :]
             batch_labels = train_labels[offset:(offset + BATCH_SIZE)]
-
-            # feed data into the model
             train_step.run(feed_dict={x: batch_data, y_: batch_labels})
             
+            if verbose and offset >= train_size-BATCH_SIZE:
+                print
 
+            if step % num_epochs == 0:
+                feed = {x: test_data, y_: test_labels}
+                result = s.run([merged, accuracy], feed_dict=feed)
+                summary_str = result[0]
+                acc = result[1]
+                writer.add_summary(summary_str, step)
 
         # Give very detailed output.
         if verbose:
@@ -123,6 +154,8 @@ def main(argv=None):
             print "softmax(Wx+b) = ", s.run(tf.nn.softmax(tf.matmul(first,W)+b))
             print
             
+        writer.flush()
+        writer.close()
         print "Accuracy:", accuracy.eval(feed_dict={x: test_data, y_: test_labels})
     
 if __name__ == '__main__':
