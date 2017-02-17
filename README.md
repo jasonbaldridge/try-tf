@@ -48,6 +48,10 @@ softmax(Wx+b) =  [[ 0.81822371  0.18177626]]
 Accuracy: 1.0
 ```
 
+The plot of the decision boundary: 
+
+<img src="decision_boundary_plots/linear_softmax.png" width="500px"/>
+
 ### Moon data
 
 The data:
@@ -68,6 +72,12 @@ Accuracy: 0.861
 $ python hidden.py --train simdata/moon_data_train.csv --test simdata/moon_data_eval.csv --num_epochs 100 --num_hidden 5
 Accuracy: 0.971
 ```  
+
+The plot of the decision boundaries produced by the above calls: 
+
+<img src="decision_boundary_plots/moon_softmax.png" width="500px"/>
+
+<img src="decision_boundary_plots/moon_hidden.png" width="500px"/>
   
 ### Saturn data
 
@@ -89,6 +99,13 @@ Accuracy: 0.43
 $ python hidden.py --train simdata/saturn_data_train.csv --test simdata/saturn_data_eval.csv --num_epochs 100 --num_hidden 15
 Accuracy: 1.0
 ```
+
+The plot of the decision boundaries produced by the above calls: 
+
+<img src="decision_boundary_plots/saturn_softmax.png" width="500px"/>
+
+<img src="decision_boundary_plots/saturn_hidden.png" width="500px"/>
+
   
 ## Generating simulated data.
   
